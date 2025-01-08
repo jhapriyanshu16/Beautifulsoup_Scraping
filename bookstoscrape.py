@@ -1,57 +1,42 @@
+# Import necessary libraries
 import requests
 from bs4 import BeautifulSoup
+
+# Step 1: Define the URL of the website to scrape
 url = "https://books.toscrape.com/index.html"
 
+# Step 2: Send an HTTP GET request to fetch the HTML content of the webpage
 response = requests.get(url)
 
-with open ('booksfile.html','w') as html:
+# Step 3: Save the HTML content to a local file for further processing
+with open('booksfile.html', 'w') as html:
     html.write(response.text)
 
-with open ('booksfile.html','r') as fp:
-    soup = BeautifulSoup(fp,'html.parser')
+# Step 4: Open the saved HTML file and parse it using BeautifulSoup
+with open('booksfile.html', 'r') as fp:
+    soup = BeautifulSoup(fp, 'html.parser')
 
-#    # print(soup.title)
-#    title_text = soup.title.text.strip()
-#    # print(title_text)
-#    print(soup.a) #This gives the first anchor tag
-#    print(soup.find('a')) #same as print(soup.a)
+# Step 5: Find all `<article>` tags with the class `product_pod` (each representing a book)
+product_pod_list = soup.find_all('article', class_='product_pod')
 
-#Here the anchor tag we want to target is inside an article tag with class product_pod
-# print(soup.find('article'))
-#print(soup.find('article',class_ = 'product_pod')) #Gives article tags where class in product_pod
-# link = soup.find('article',class_ = 'product_pod').h3.a
-# print(link.text) #prints the text of the link
-# print(link["title"]) #prints the title
-# print(link["href"]) #prints the actual link
-
-articleTagsWithClassProduct_pod = soup.find_all('article',class_ = 'product_pod')
-for elem in articleTagsWithClassProduct_pod:
-    #print(elem.h3.a["title"]) #Returns every book title
-    pass
-
-divWithClassproduct_price = soup.find_all('div',class_ = 'product_price')
-for elem in divWithClassproduct_price:
-    price = elem.p.text
-    price_without_curr_sym = float(price.strip('Â£'))
-    #print(price_without_curr_sym)    #Returns every price
-    pass
-
-
-
-#Storing and mapping Book title and price
-product_pod_list = soup.find_all('article',class_ = 'product_pod')
+# Step 6: Initialize an empty list to store book data
 data = []
-for elem in product_pod_list : 
-    title = elem.h3.a["title"]
-    price = float((elem.find('div',class_ = 'product_price').p.text).lstrip('Â£'))
-    data.append({title:price})
 
+# Step 7: Iterate through each `<article>` tag and extract the book's title and price
+for elem in product_pod_list:
+    # Extract the title of the book from the `<a>` tag inside `<h3>`
+    title = elem.h3.a["title"]
+    
+    # Extract the price of the book from the `<p>` tag inside the `product_price` div
+    # Convert the price string (e.g., '£51.77') to a float, removing the '£' symbol
+    price = float((elem.find('div', class_='product_price').p.text).lstrip('Â£'))
+    
+    # Append the book's title and price as a dictionary to the data list
+    data.append({title: price})
+
+# Step 8: Print the list of books with their titles and prices
 print(data)
 
-
-
-
-    
 
 
 
