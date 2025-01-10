@@ -20,8 +20,15 @@ clg_course_list = []
 clg_cutoff_list = []
 clg_fees_list = []
 program_name_list = []
+avg_pack_list = []
+high_pack_list = []
+clg_review_list = []
+clg_tag_list = []
+clg_ranking_list = []
+ranking_out_of_list = []
 
 soup = BeautifulSoup(response.text,'html.parser')
+
 table_wrapper = soup.find('div',class_= 'jsx-4033392124 jsx-1933831621 table-wrapper')
 tr_list = table_wrapper.div.table.tbody.find_all('tr',recursive=False)
 for tr in tr_list:
@@ -63,11 +70,49 @@ for tr in tr_list:
                 program_name_list.append(program.text.strip())
             else:
                 program_name_list.append('')
-            
-        
-            
+        if(index == 3):
+            package = td.find_all('span',class_="jsx-914129990 text-green d-block mb-1")
+            if (len(package)==2):
+                avg = td.find_all('span',class_="jsx-914129990 text-green d-block mb-1")[0]
+                if(avg):
+                    avg_pack_list.append(int(avg.text[2:].replace(',','').strip()))
+                else:
+                    avg_pack_list.append('')
+                high = td.find_all('span',class_="jsx-914129990 text-green d-block mb-1")[1]
+                if(high):
+                    high_pack_list.append(int(high.text[2:].replace(',','').strip()))
+                else:
+                    high_pack_list.append('')
+            else:
+                high = td.find_all('span',class_="jsx-914129990 text-green d-block mb-1")[0]
+                if(high):
+                    high_pack_list.append(int(high.text[2:].replace(',','').strip()))
+                else:
+                    high_pack_list.append('')
+        if(index == 4):
+            review = td.find('span',class_='jsx-3230181281 lr-key text-lg text-primary d-block font-weight-medium mb-1')
+            if(review):
+                clg_review_list.append(review.text.strip())
+            else:
+                clg_review_list.append('')
+            tag = td.find('span',class_='jsx-3230181281 placement-reviews-back pointer position-relative p-1 tagline mt-2 font-weight-medium d-inline-flex align-items-center').find('span',class_='jsx-3230181281')
+            if(tag):
+                clg_tag_list.append(tag.text)
+            else:
+                clg_tag_list.append('')
+        if(index == 5):
+            ranking = td.find('span',class_='jsx-2794970405 rank-span no-break').find('span',class_='jsx-2794970405')
+            if(ranking):
+                clg_ranking_list.append(int(ranking.text.split('th')[0].replace('#', '')))
+                ranking_out_of_list.append(int((ranking.find('span',class_='jsx-2794970405 text-primary').text)))
+            else:
+                clg_ranking_list.append('')
+                ranking_out_of_list.append('')
 
-    break
+
+
+
+
 
 print(rank_list)
 print(clg_name_list)
@@ -78,5 +123,10 @@ print(clg_course_list)
 print(clg_cutoff_list)
 print(clg_fees_list)
 print(program_name_list)
-
+print(avg_pack_list)
+print(high_pack_list)
+print(clg_review_list)
+print(clg_tag_list)
+print(clg_ranking_list)
+print(ranking_out_of_list)
 
